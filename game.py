@@ -218,6 +218,46 @@ class Game:
             else:
                 type_text("Unbekannter Befehl. Gib 'hilfe' ein für eine Liste der Befehle.")
 
+    def truhe(self):
+        if "truhe" not in self.items_gefunden:
+            print("Du siehst eine alte Holztruhe in der Ecke des Raums.")
+            if self.frage_ja_nein("Möchtest du die Truhe öffnen?"):
+                print("Du öffnest die Truhe und findest einen goldenen Schlüssel!")
+                self.items_gefunden.append("truhe")
+                self.inventar.append("Schlüssel")
+            else:
+                print("Du lässt die Truhe unberührt.")
+        else:
+            print("Die Truhe ist bereits leer.")
+
+    def handle_input(self, command):
+        command = command.lower().strip()
+        words = command.split()
+        
+        if not words:
+            return
+        
+        verb = words[0]
+        noun = words[1] if len(words) > 1 else ""
+
+        # Bewegungsbefehle vereinheitlichen
+        if verb in ["geh", "gehe", "benutze"]:
+            if "tür" in noun:
+                self.tuer(noun)
+                return
+        
+        # Standardbefehle
+        if command == "hilfe":
+            self.hilfe()
+        elif command == "inventar":
+            self.zeige_inventar()
+        elif "tür" in command:
+            self.tuer(command)
+        elif "truhe" in command:
+            self.truhe()
+        else:
+            print("Das verstehe ich nicht.")
+
 if __name__ == "__main__":
     game = Game()
     game.run()
